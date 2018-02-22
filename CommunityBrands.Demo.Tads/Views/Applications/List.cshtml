@@ -1,0 +1,90 @@
+﻿@model IEnumerable<EducationBrands.Demo.Tads.Models.Applicant>
+
+@{
+    ViewBag.Title = "Applications";
+}
+
+<h2>TADS</h2>
+
+    <div class="row" style="padding:15px 0 15px 0;">
+        <div class="col-md-8">
+            Total Applicants: <b>@ViewBag.totalCount</b> 
+        </div>
+        <div class="col-md-4 text-right">
+            <div style="font-weight:bold;display:inline-block;">
+                @Html.ActionLink("<< Previous", "List", new { pageNo = @ViewBag.Previous })
+            </div>
+            <div  style="font-weight:bold;display:inline-block;padding-left:15px;">
+                @Html.ActionLink("Next >>", "List", new { pageNo = @ViewBag.Next })
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.SchoolName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DOB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HouseholdName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HouseholdPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HouseholdEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Grade)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.StudentId)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SchoolName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DOB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HouseholdName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HouseholdPhone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HouseholdEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Grade)
+                </td>
+            </tr>
+        }
+
+    </table>
+
+
