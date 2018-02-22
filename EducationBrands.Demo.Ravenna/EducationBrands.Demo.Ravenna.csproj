@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,10 +46,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CB.IntegrationService.ApiClient">
-      <HintPath>..\..\BuildOutput\CB.IntegrationService.ApiClient.dll</HintPath>
+      <HintPath>..\BuildOutput\CB.IntegrationService.ApiClient.dll</HintPath>
     </Reference>
     <Reference Include="CB.IntegrationService.ApiModels">
-      <HintPath>..\..\BuildOutput\CB.IntegrationService.ApiModels.dll</HintPath>
+      <HintPath>..\BuildOutput\CB.IntegrationService.ApiModels.dll</HintPath>
     </Reference>
     <Reference Include="CB.IntegrationService.StandardDataSet">
       <HintPath>..\BuildOutput\CB.IntegrationService.StandardDataSet.dll</HintPath>
@@ -61,10 +62,6 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="RestSharp, Version=106.2.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BuildOutput\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
