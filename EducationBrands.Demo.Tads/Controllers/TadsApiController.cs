@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using EducationBrands.Demo.Tads.Models;
-using EducationBrands.IntegrationService.StandardDataSet.Models;
+using CB.IntegrationService.StandardDataSet;
 using System.Data.SqlClient;
 using System.Data;
 using System.Web.Script.Serialization;

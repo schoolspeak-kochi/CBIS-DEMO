@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using EducationBrands.IntegrationService.StandardDataSet;
+using CB.IntegrationService.StandardDataSet;
 using System.IO;
 using System.Web.Script.Serialization;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using EducationBrands.IntegrationService.StandardDataSet.Models;
+using CB.IntegrationService.StandardDataSet;
 using EducationBrands.Demo.Ravenna.Models;
 using System.Web.Script.Serialization;
 using CB.IntegrationService.ApiModels;
