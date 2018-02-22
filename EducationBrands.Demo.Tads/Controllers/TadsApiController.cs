@@ -1,7 +1,4 @@
-﻿using EducationBrands.IntegrationService;
-using EducationBrands.IntegrationService.Models;
-using EducationBrands.IntegrationService.Utils;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -37,55 +34,20 @@ namespace EducationBrands.Demo.Controllers
             return Ok("PongPost Ravenna @ " + DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt"));
         }
 
-        #region Member        
-        /// <summary>
-        /// Called when a member is added.
-        /// </summary>
-        [Route("Member/CreateMember")]
-        [HttpPost]
-        public async Task<IHttpActionResult> CreateMember()
-        {
-            try
-            {
-                HttpContext context = HttpContext.Current;
-
-                //If message doesn't have the message type header, don't process it.
-                if (context.Request.Headers["x-amz-sns-message-type"] == null)
-                {
-                    return BadRequest("Does not contain header x-amz-sns-message-type");
-                }
-
-                string requestContent = await Request.Content.ReadAsStringAsync();
-
-                // Log the received request content
-                JsonHelper.WriteObjectToFile(requestContent, "C://SchoolSpeak//SNSLogs//ReceivedRequest.txt");
-
-                // Parse the request
-                // EbMember ebMember = MessageBroker.ParseRequestBody<EbMember>(requestContent);
-
-                return Ok("Success");
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
-        #endregion
-
         [Route("Notification")]
         [HttpPost]
         public IHttpActionResult Notification([FromBody]ProductNotificationRequest productNotificationRequest)
         {
-            int statusCode;
+            //int statusCode = 0;;
             try
             {
                 RequestTimeStamp = DateTime.Now;
                 ProcessRequest(productNotificationRequest);
-                statusCode = (int)HttpStatusCode.OK;
+                //statusCode = (int)HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
-                statusCode = (int)HttpStatusCode.InternalServerError;
+                //statusCode = (int)HttpStatusCode.InternalServerError;
             }
 
             return Ok("Processed successfully");
@@ -125,9 +87,9 @@ namespace EducationBrands.Demo.Controllers
                 {
                     Household houseHold = mem.Households[0];
                     applicant.HouseholdName = houseHold.Name;
-                    if (houseHold.Phones!=null && houseHold.Phones.Count > 0)
+                    if (houseHold.Phones != null && houseHold.Phones.Count > 0)
                         applicant.HouseholdPhone = houseHold.Phones[0].Number;
-                    if (houseHold.EmailAddresses!=null && houseHold.EmailAddresses.Count > 0)
+                    if (houseHold.EmailAddresses != null && houseHold.EmailAddresses.Count > 0)
                         applicant.HouseholdEmail = houseHold.EmailAddresses[0].EmailId;
                 }
 
@@ -138,13 +100,13 @@ namespace EducationBrands.Demo.Controllers
 
             DBHelper.InsertApplicantstoDB(applicants);
         }
-            
+
         /// <summary>
         /// Send acknowledge information to EBISs
         /// </summary>
         /// <param name="statusCode"></param>
         /// <param name="statusMessage"></param>
-        private void AcknowledgeEbis( string eventToken, int statusCode)
+        private void AcknowledgeEbis(string eventToken, int statusCode)
         {
             NotificationAcknowledgeRequest notificationAckRequest = new NotificationAcknowledgeRequest()
             {

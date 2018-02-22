@@ -50,10 +50,6 @@
     <Reference Include="CB.IntegrationService.ApiModels">
       <HintPath>..\..\BuildOutput\CB.IntegrationService.ApiModels.dll</HintPath>
     </Reference>
-    <Reference Include="EducationBrands.IntegrationService, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BuildOutput\EducationBrands.IntegrationService.dll</HintPath>
-    </Reference>
     <Reference Include="EducationBrands.IntegrationService.StandardDataSet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BuildOutput\EducationBrands.IntegrationService.StandardDataSet.dll</HintPath>
