@@ -2,3 +2,7 @@ bin
 obj
 packages
 Publish/
+applicationhost.config
+Web.config
+Web.Debug.config
+Web.Release.config
