@@ -9,6 +9,7 @@ using CB.IntegrationService.ApiClient.Client;
 using CB.IntegrationService.ApiClient.Api;
 using CommunityBrands.Demo.Ravenna.Utils;
 using CommunityBrands.Demo.Ravenna.Models;
+using CB.IntegrationService.StandardDataSet.Models;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
@@ -139,7 +140,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                 Configuration conf = new Configuration();
                 conf.DefaultHeader = dicHeaders;
                 DataExchangeApi instance = new DataExchangeApi(conf);
-                PublishEventResponse publishResponse = instance.PublishNotificationEvent(publEvent);
+                PublishEventResponse publishResponse = instance.PublishEvent(publEvent);
                 return publishResponse;
             }
             return null;

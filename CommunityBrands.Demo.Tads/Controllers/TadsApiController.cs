@@ -14,6 +14,7 @@ using System.Net;
 using CB.IntegrationService.ApiClient.Api;
 using CommunityBrands.Demo.Tads.Models;
 using CommunityBrands.Demo.Tads.Utils;
+using CB.IntegrationService.StandardDataSet.Models;
 
 namespace CommunityBrands.Demo.Controllers
 {
@@ -127,7 +128,7 @@ namespace CommunityBrands.Demo.Controllers
             conf.DefaultHeader = dicHeaders;
 
             DataExchangeApi instance = new DataExchangeApi(conf);
-            instance.NotificationAcknowledgeEvent(notificationAckRequest);
+            instance.NotificationAcknowledge(notificationAckRequest);
         }
     }
 }

@@ -45,13 +45,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CB.IntegrationService.ApiClient">
+    <Reference Include="CB.IntegrationService.ApiClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BuildOutput\CB.IntegrationService.ApiClient.dll</HintPath>
     </Reference>
-    <Reference Include="CB.IntegrationService.ApiModels">
+    <Reference Include="CB.IntegrationService.ApiModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BuildOutput\CB.IntegrationService.ApiModels.dll</HintPath>
     </Reference>
-    <Reference Include="CB.IntegrationService.StandardDataSet">
+    <Reference Include="CB.IntegrationService.StandardDataSet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BuildOutput\CB.IntegrationService.StandardDataSet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
