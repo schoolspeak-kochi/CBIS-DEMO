@@ -10,6 +10,7 @@ using CB.IntegrationService.ApiClient.Api;
 using CommunityBrands.Demo.Ravenna.Utils;
 using CommunityBrands.Demo.Ravenna.Models;
 using CB.IntegrationService.StandardDataSet.Models;
+using System.Text;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
@@ -134,9 +135,14 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                     Payload = jsonSerialiser.Serialize(StdModel),
                 };
                 Dictionary<string, string> dicHeaders = new Dictionary<string, string>();
-                dicHeaders.Add("ProductId", "5");
-                dicHeaders.Add("ProductName", "Ravenna");
-                dicHeaders.Add("ProductSecret", "xxxyyyzzz");
+                //Product Id , Id for Ravenna in CBIS database
+                // pwd : Credentials for communication with CBIS
+                string prodId = "5";
+                string pwd = "xxxyyyzzz";
+
+                string basicCredentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(prodId + ":" + pwd));
+
+                dicHeaders.Add("Authorization", "Basic " + basicCredentials);
                 Configuration conf = new Configuration();
                 conf.DefaultHeader = dicHeaders;
                 DataExchangeApi instance = new DataExchangeApi(conf);
@@ -156,6 +162,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                     Member member = new Member();
                     member.FirstName = ravennaMember.FirstName;
                     member.LastName = ravennaMember.LastName;
+                    //just for mapping, not added in DB.hence simply adding M, F for alternate members.
                     ravennaMember.Gender = "M";
                     if (key / 2 == 0)
                     {
