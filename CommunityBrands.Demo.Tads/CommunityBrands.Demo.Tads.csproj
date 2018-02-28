@@ -45,8 +45,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CB.IntegrationService.ApiClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CB.IntegrationService.ApiClient">
       <HintPath>..\BuildOutput\CB.IntegrationService.ApiClient.dll</HintPath>
     </Reference>
     <Reference Include="CB.IntegrationService.ApiModels, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -186,6 +185,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ServiceClasses\ApiSecurity.cs" />
+    <Compile Include="ServiceClasses\TadsAuthorization.cs" />
     <Compile Include="Utils\DBHelper.cs" />
     <Compile Include="Models\Applicant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

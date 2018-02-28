@@ -15,7 +15,8 @@ using CB.IntegrationService.ApiClient.Api;
 using CommunityBrands.Demo.Tads.Models;
 using CommunityBrands.Demo.Tads.Utils;
 using CB.IntegrationService.StandardDataSet.Models;
-
+using EducationBrands.Demo.Tads.ServiceClasses;
+using System.Text;
 namespace CommunityBrands.Demo.Controllers
 {
     [RoutePrefix("TadsApi")]
@@ -36,26 +37,29 @@ namespace CommunityBrands.Demo.Controllers
             return Ok("PongPost TadsDemo @ " + DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt"));
         }
 
+       // [TadsAuthorization]
+     //   [Authorize]
         [Route("Notification")]
         [HttpPost]
         public IHttpActionResult Notification([FromBody]ProductNotificationRequest productNotificationRequest)
         {
-            //int statusCode = 0;;
+            RequestTimeStamp = DateTime.Now;
+            int statusCode = 0;
+
             try
             {
-                RequestTimeStamp = DateTime.Now;
                 ProcessRequest(productNotificationRequest);
-                //statusCode = (int)HttpStatusCode.OK;
+                statusCode = (int)HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
-                //statusCode = (int)HttpStatusCode.InternalServerError;
+                statusCode = (int)HttpStatusCode.InternalServerError;
                 return InternalServerError(ex);
             }
 
+            //Acknowlege the hub, whether the requset is processed successfully or not
+            AcknowledgeEbis(productNotificationRequest.EventToken, statusCode);
             return Ok("Processed successfully");
-
-            // AcknowledgeEbis(productNotificationRequest.EventToken, statusCode);
         }
 
         /// <summary>
@@ -120,13 +124,21 @@ namespace CommunityBrands.Demo.Controllers
                 StatusMessage = statusCode == (int)HttpStatusCode.OK ? "Processed successfully" : "Operation failed"
             };
 
+            //Constructing header for the acknowledge request
             Dictionary<string, string> dicHeaders = new Dictionary<string, string>();
+            //Product Id , Id for Tads in CBIS database
+            //pwd : Credentials for communication with CBIS
+            string prodId = "2";
+            string pwd = "xxxyyyzzz";
+            string basicCredentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(prodId + ":" + pwd));
+            dicHeaders.Add("Authorization", "Basic " + basicCredentials);
             dicHeaders.Add("ProductId", "2");
             dicHeaders.Add("ProductName", "Tads");
             dicHeaders.Add("ProductSecret", "xxxyyyzzz");
+
             Configuration conf = new Configuration();
             conf.DefaultHeader = dicHeaders;
-
+            //Send acknowledge notification to EBIS
             DataExchangeApi instance = new DataExchangeApi(conf);
             instance.NotificationAcknowledge(notificationAckRequest);
         }
