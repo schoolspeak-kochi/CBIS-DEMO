@@ -1,4 +1,4 @@
-﻿using CB.IntegrationService.ApiModels;
+﻿using CB.IntegrationService.ApiClient.Model;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -31,10 +31,16 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         // POST api/<controller>
         [Route("acknowledgeNotification")]
         [HttpPost]
-        public void AcknowledgeNotification([FromBody]NotificationAcknowledgeRequest ackModel)
+        public void AcknowledgeNotification([FromBody]CBISResult ackModel)
         {
+            if (ackModel.Errors!= null && ackModel.Errors.Count>0)
+            {
+                List<string> lstErrors = HttpContext.Current.Application["AckError"] == null ? new List<string>() : (List<string>)HttpContext.Current.Application["AckError"];
+                lstErrors.AddRange(ackModel.Errors);
+                HttpContext.Current.Application["AckError"] = lstErrors;
+            }
             List<string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new List<string>():(List<string>) HttpContext.Current.Application["AckReq"];
-            lstEventToken.Add(ackModel.EventToken);
+            lstEventToken.Add(ackModel.Id);
             HttpContext.Current.Application["AckReq"] = lstEventToken;
         }
 

@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CB.IntegrationService.StandardDataSet;
 using System.Web.Script.Serialization;
-using CB.IntegrationService.ApiModels;
 using CB.IntegrationService.ApiClient.Client;
-using CB.IntegrationService.ApiClient.Api;
 using CommunityBrands.Demo.Ravenna.Utils;
 using CommunityBrands.Demo.Ravenna.Models;
 using CB.IntegrationService.StandardDataSet.Models;
-using System.Text;
+using CB.IntegrationService.ApiClient;
+using CB.IntegrationService.ApiClient.Model;
+using System.Net;
+using CB.IntegrationService.Models;
+using Newtonsoft.Json.Linq;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
@@ -95,20 +96,60 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public JsonResult GetPayload(long[] IsSelected)
+        {
+            List<MemberModel> lstMembers = (List<MemberModel>)Session["LstMembers"];
+            if (IsSelected.Length > 0)
+            {
+                try
+                {
+                    List<Person> StdModel = new List<Person>();
+                    MapToStandardDataSet(IsSelected, lstMembers, StdModel);
+                    if (StdModel != null || StdModel.Count > 0)
+                    {
+                        // Send the data
+                        var jsonSerialiser = new JavaScriptSerializer();
+
+                        CBISMessage publEvent = new CBISMessage()
+                        {
+                            CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
+                            MessageId = Guid.NewGuid().ToString(),
+                            Model = "Person",
+                            Data = StdModel,
+                            EventName = "StudentAdmit",
+                            InstitutionId = "1001",
+                            MessageType = MessageType.Notification.ToString(),
+                            Origin = "RAVENNA"
+                        };
+                        return new JsonResult() { Data = publEvent, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.ErrorMessage = "Error: " + ex.Message;
+                    return new JsonResult() { Data =  ex.Message , JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+                }
+            }
+            return new JsonResult() { Data = "No Data", JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
         [HttpPost]
         public ActionResult SendData(long[] isSelected)
         {
             List<MemberModel> lstMembers = (List<MemberModel>)Session["LstMembers"];
             try
             {
-                MembersCollection StdModel = new MembersCollection();
-                StdModel.Members = new List<Member>();
+                List<Person> StdModel = new List<Person>();
                 MapToStandardDataSet(isSelected, lstMembers, StdModel);
-                PublishEventResponse publishResponse = PublishToEbis(StdModel);
+                
+                CBISResponse publishResponse = PublishToEbis(StdModel);
                 ViewBag.SuccessMessage = "Selected members Successfully sent to TADS.";
-                if (publishResponse != null)
+                if (publishResponse.ResponseCode == HttpStatusCode.Accepted.ToString())
                 {
-                    ViewBag.SuccessMessage += ". Publish Event Token: " + publishResponse.EbPublishedEventId;
+                    ViewBag.SuccessMessage += "Published successfully";
                 }
             }
             catch (Exception ex)
@@ -119,47 +160,45 @@ namespace EducationBrands.Demo.Ravenna.Controllers
 
         }
 
-        private PublishEventResponse PublishToEbis(MembersCollection StdModel)
+        private CBISResponse PublishToEbis(List<Person> StdModel)
         {
-            if (StdModel != null || StdModel.Members.Count > 0)
+            if (StdModel != null || StdModel.Count > 0)
             {
                 // Send the data
                 var jsonSerialiser = new JavaScriptSerializer();
 
-                PublishEventRequest publEvent = new PublishEventRequest()
+                CBISMessage publEvent = new CBISMessage()
                 {
-                    AcknowledgementRequired = true,
-                    EbInstitutionId = "1",
-                    InstitutionName = "Summer wood school",
-                    EventName = "StudentsAdmitted",
-                    Payload = jsonSerialiser.Serialize(StdModel),
+                    CbInstitutionId= "7a804094-283f-11e8-9cea-025339e5fa76",
+                    MessageId = new Guid().ToString(),
+                    Model = typeof(Person).ToString(),
+                    Data = jsonSerialiser.Serialize(StdModel),
+                    EventName= "StudentAdmit",
+                    InstitutionId= "1001",
+                    MessageType=MessageType.Notification.ToString(),
+                    Origin="RAVENNA"
                 };
-                Dictionary<string, string> dicHeaders = new Dictionary<string, string>();
-                //Product Id , Id for Ravenna in CBIS database
-                // pwd : Credentials for communication with CBIS
-                string prodId = "5";
-                string pwd = "xxxyyyzzz";
+                
+                Configuration conf = new Configuration()
+                {
+                    AuthenticationSecretKey = "ZTI1MjA1NWItMjgzZS0xMWU4LTljZWEtMDI1MzM5ZTVmYTc2OnJhdmVubmFQYXNzd29yZA=="
+                };
 
-                string basicCredentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(prodId + ":" + pwd));
-
-                dicHeaders.Add("Authorization", "Basic " + basicCredentials);
-                Configuration conf = new Configuration();
-                conf.DefaultHeader = dicHeaders;
-                DataExchangeApi instance = new DataExchangeApi(conf);
-                PublishEventResponse publishResponse = instance.PublishEvent(publEvent);
+                DataExchangeApi dataExchangeApi = new DataExchangeApi(conf);
+                CBISResponse publishResponse = dataExchangeApi.NotificationPublish(publEvent);
                 return publishResponse;
             }
             return null;
         }
 
-        private void MapToStandardDataSet(long[] IsSelected, List<MemberModel> lstMembers, MembersCollection StdModel)
+        private void MapToStandardDataSet(long[] IsSelected, List<MemberModel> lstMembers, List<Person> StdModel)
         {
             foreach (long key in IsSelected)
             {
                 MemberModel ravennaMember = lstMembers.FirstOrDefault(m => m.MemberId == key);
                 if (ravennaMember != null)
                 {
-                    Member member = new Member();
+                    Person member = new Person();
                     member.FirstName = ravennaMember.FirstName;
                     member.LastName = ravennaMember.LastName;
                     //just for mapping, not added in DB.hence simply adding M, F for alternate members.
@@ -178,8 +217,8 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                     if (ravennaMember.HouseHold != null)
                     {
                         Household huseHld = new Household();
-                        huseHld.Addresses = new List<Add>();
-                        Add add1 = new Add();
+                        huseHld.Addresses = new List<Adddress>();
+                        Adddress add1 = new Adddress();
                         add1.Line1 = ravennaMember.HouseHold.Address.Street;
                         add1.City = ravennaMember.HouseHold.Address.City;
                         add1.State = ravennaMember.HouseHold.Address.State;
@@ -220,7 +259,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                         member.FinancialAid = new FinancialAid();
                         member.FinancialAid.FinalAward = decimal.Parse(ravennaMember.FAGrantAmount.ToString());
                     }
-                    StdModel.Members.Add(member);
+                    StdModel.Add(member);
                 }
             }
         }
