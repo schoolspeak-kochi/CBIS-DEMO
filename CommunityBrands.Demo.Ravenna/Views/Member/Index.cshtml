@@ -42,7 +42,7 @@
                 cache: false,
                 success: function (result) {
                     $("#txtPayload").css('display', '');
-                    $("#txtPayload").val(JSON.stringify( result));
+                    $("#txtPayload").val(JSON.stringify(result, null, "\t"));
                     _hideOverLay();
                 },
                 error: function () {
@@ -140,7 +140,7 @@
             }
         </div>
         <div id="mycontentView" style="position:fixed; top:79px;left:400px;max-height:85%;overflow-y:auto;">
-            <textarea id="txtPayload" rows="100" cols="100" style="display:none;height:100%;width:100%" ></textarea>
+            <textarea id="txtPayload" rows="100" cols="130" style="display:none;height:100%;width:100%" ></textarea>
         </div>
     </div>
     <div id="Overlay" name="Overlay" class="overlay">
