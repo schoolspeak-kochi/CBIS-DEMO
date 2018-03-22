@@ -41,15 +41,20 @@
                 data: jsonData,
                 cache: false,
                 success: function (result) {
-                    $("#txtPayload").css('display', '');
-                    $("#txtPayload").val(JSON.stringify(result, null, "\t"));
+                    $("#mycontentView").html("<textarea rows=\"100\" cols=\"130\" style=\"height:100%;width:100%\">" + JSON.stringify(result, null, 4) + "</textarea>");
+
                     _hideOverLay();
                 },
                 error: function () {
                     _hideOverLay();
                 }
             });
-            @*var url = "@Html.Raw(Url.Action("GetMember", "Member", new { id = "-id" }))";
+        }
+
+        function getMember(Id) {
+            _showOverLay();
+            debugger;
+            var url = "@Html.Raw(Url.Action("GetMember", "Member", new { id = "-id" }))";
             url = url.replace("-id", Id);
             $.ajax({
                 url: url,
@@ -63,7 +68,7 @@
                     _hideOverLay();
                     //handle your error here
                 }
-            });*@
+            });
         }
     </script>
     <style>
@@ -129,7 +134,7 @@
                                 <input type="checkbox" name="isSelected" value="@item.MemberId" />
                             </td>
                             <td>
-                                <a class="link-1" id="btnLinkInfo" style="text-decoration:none" href='javascript:void(0)'>@item.FirstName @item.LastName</a>
+                                <a class="link-1" id="btnLinkInfo" style="text-decoration:none" href='javascript:getMember(@item.MemberId)'>@item.FirstName @item.LastName</a>
                             </td>
                         </tr>
                     }
@@ -140,8 +145,7 @@
             }
         </div>
         <div id="mycontentView" style="position:fixed; top:79px;left:400px;max-height:85%;overflow-y:auto;">
-            <textarea id="txtPayload" rows="100" cols="130" style="display:none;height:100%;width:100%" ></textarea>
-        </div>
+         </div>
     </div>
     <div id="Overlay" name="Overlay" class="overlay">
         <img style="margin-top:15%" src="http://www.lumiagem.com/images/site_elements/loadingGraphic.gif" alt="Loading..">
