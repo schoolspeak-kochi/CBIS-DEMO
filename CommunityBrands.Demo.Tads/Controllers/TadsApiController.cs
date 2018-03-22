@@ -68,9 +68,15 @@ namespace CommunityBrands.Demo.Controllers
             if (cbisMessage == null)
                 return null;
 
+            JToken jToken = cbisMessage.Data;
+
+            if (jToken == null || jToken.Type == JTokenType.Array)
+                return null;
+
             List<Applicant> applicants = new List<Applicant>();
             List<CBISResult> lstCBISResult = new List<CBISResult>();
-            foreach (JObject jObject in cbisMessage.Data.Children<JObject>())
+
+            foreach (JObject jObject in jToken.Children<JObject>())
             {
                 Member mem = jObject.ToObject<Member>();
                 if (mem != null)
