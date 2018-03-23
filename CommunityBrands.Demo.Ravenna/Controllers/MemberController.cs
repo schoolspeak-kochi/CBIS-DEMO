@@ -166,14 +166,16 @@ namespace EducationBrands.Demo.Ravenna.Controllers
             {
                 // Send the data
                 var jsonSerialiser = new JavaScriptSerializer();
-
+                Dictionary<string, string> dicVer = new Dictionary<string, string>();
+                dicVer.Add("Person", "1.0.0");
                 CBISMessage publEvent = new CBISMessage()
                 {
-                    CbInstitutionId= "7a804094-283f-11e8-9cea-025339e5fa76",
+                    CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
                     MessageId = new Guid().ToString(),
                     Model = typeof(Person).ToString(),
                     Data = jsonSerialiser.Serialize(StdModel),
-                    EventName= "StudentAdmit",
+                    Version = dicVer,
+                    EventName = "StudentAdmit",
                     InstitutionId= "1001",
                     MessageType=MessageType.Notification.ToString(),
                     Origin="RAVENNA"
