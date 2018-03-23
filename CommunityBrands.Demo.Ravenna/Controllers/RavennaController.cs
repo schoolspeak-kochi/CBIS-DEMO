@@ -6,7 +6,6 @@ using System.Web.Http;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
-    [RoutePrefix("RavennaApi")]
     public class RavennaController : ApiController
     {
         [Route("Ping")]
@@ -29,18 +28,22 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         }
 
         // POST api/<controller>
-        [Route("acknowledgeNotification")]
+        [Route("Notification")]
         [HttpPost]
-        public void AcknowledgeNotification([FromBody]CBISResult ackModel)
+        public void AcknowledgeNotification([FromBody]CBISMessage ackModel)
         {
-            if (ackModel.Errors!= null && ackModel.Errors.Count>0)
+            if (ackModel.Data!= null)
             {
-                List<string> lstErrors = HttpContext.Current.Application["AckError"] == null ? new List<string>() : (List<string>)HttpContext.Current.Application["AckError"];
-                lstErrors.AddRange(ackModel.Errors);
-                HttpContext.Current.Application["AckError"] = lstErrors;
+                CBISResult errors = (CBISResult)ackModel.Data;
+                if (errors != null && errors.Errors.Count > 0)
+                {
+                    List<string> lstErrors = HttpContext.Current.Application["AckError"] == null ? new List<string>() : (List<string>)HttpContext.Current.Application["AckError"];
+                    lstErrors.AddRange(errors.Errors);
+                    HttpContext.Current.Application["AckError"] = lstErrors;
+                }
             }
-            List<string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new List<string>():(List<string>) HttpContext.Current.Application["AckReq"];
-            lstEventToken.Add(ackModel.Id);
+            List<string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new List<string>() : (List<string>)HttpContext.Current.Application["AckReq"];
+            lstEventToken.Add(ackModel.MessageId);
             HttpContext.Current.Application["AckReq"] = lstEventToken;
         }
 
