@@ -68,17 +68,7 @@ namespace CommunityBrands.Demo.Controllers
                 throw new Exception();
             }
 
-            JToken token = cbisMessage.Data;
-            List<Person> lstPerson = new List<Person>();
-
-            if (token is JArray)
-            {
-                lstPerson = token.ToObject<List<Person>>();
-            }
-            else if (token is JObject)
-            {
-                lstPerson.Add(token.ToObject<Person>());
-            }
+            List<Person> lstPerson = (List <Person>)cbisMessage.Data;
 
             List<Applicant> applicants = new List<Applicant>();
             List<CBISResult> lstCBISResult = new List<CBISResult>();
