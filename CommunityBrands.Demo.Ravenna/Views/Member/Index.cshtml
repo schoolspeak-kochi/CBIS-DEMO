@@ -11,7 +11,7 @@
     <title></title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript">
-        
+
         $(function () {
             var $tblChkBox = $("input:checkbox");
             $("#ckbCheckAll").on("click", function () {
@@ -26,15 +26,40 @@
             var ov = $("#Overlay");
             ov.hide();
         }
+        function getPayload() {
+            _showOverLay();
+            var yourArray=[];
+            $("input:checkbox[name=isSelected]:checked").each(function () {
+                yourArray.push($(this).val());
+            });
+            debugger;
+            var url = "@Html.Raw(Url.Action("GetPayload", "Member"))";
+            var jsonData = { isSelected: yourArray } /*JSON.stringify("{\"isSelected\":\"" + JSON.stringify(yourArray) + "\"}");*/
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: jsonData,
+                cache: false,
+                success: function (result) {
+                    $("#mycontentView").html("<div><h1>Payload for submission</h1></div><textarea readonly rows=\"100\" cols=\"130\" style=\"height:100%;width:100%\">" + JSON.stringify(result, null, 4) + "</textarea>");
+
+                    _hideOverLay();
+                },
+                error: function () {
+                    _hideOverLay();
+                }
+            });
+        }
+
         function getMember(Id) {
             _showOverLay();
             debugger;
             var url = "@Html.Raw(Url.Action("GetMember", "Member", new { id = "-id" }))";
             url = url.replace("-id", Id);
             $.ajax({
-                url: url, 
-                type: "GET", 
-                cache: false, 
+                url: url,
+                type: "GET",
+                cache: false,
                 success: function (result) {
                     $("#mycontentView").html(result);
                     _hideOverLay();
@@ -44,7 +69,7 @@
                     //handle your error here
                 }
             });
-        }      
+        }
     </script>
     <style>
        .overlay {
@@ -98,7 +123,9 @@
 
             <br /><br>
             @using (Html.BeginForm("SendData", "Member", FormMethod.Post))
-            {
+            { 
+                <input type="button" value="Get Payload" onclick="javascript:getPayload()" />
+                <input type="submit" value="Send Data" /><br /><br />
                 <table>
                     @foreach (CommunityBrands.Demo.Ravenna.Models.MemberModel item in Model)
                     {
@@ -112,13 +139,13 @@
                         </tr>
                     }
                 </table>
+                <input type="button" value="Get Payload" onclick="javascript:getPayload()"/>
                 <input type="submit" value="Send Data" /><br /><br />
 
             }
         </div>
         <div id="mycontentView" style="position:fixed; top:79px;left:400px;max-height:85%;overflow-y:auto;">
-
-        </div>
+         </div>
     </div>
     <div id="Overlay" name="Overlay" class="overlay">
         <img style="margin-top:15%" src="http://www.lumiagem.com/images/site_elements/loadingGraphic.gif" alt="Loading..">

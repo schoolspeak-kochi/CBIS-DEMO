@@ -53,6 +53,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BuildOutput\CB.IntegrationService.ApiModels.dll</HintPath>
     </Reference>
+    <Reference Include="CB.IntegrationService.Models">
+      <HintPath>..\..\..\CBIS-DEV\BuildOutput\CB.IntegrationService.Models.dll</HintPath>
+    </Reference>
     <Reference Include="CB.IntegrationService.StandardDataSet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BuildOutput\CB.IntegrationService.StandardDataSet.dll</HintPath>

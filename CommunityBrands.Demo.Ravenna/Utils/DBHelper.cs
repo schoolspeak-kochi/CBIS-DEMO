@@ -1,5 +1,6 @@
 ﻿using CommunityBrands.Demo.Ravenna.Models;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -8,11 +9,9 @@ namespace CommunityBrands.Demo.Ravenna.Utils
 {
     public class DBHandler
     {
-        string connectionString = "Data Source=ebispocinstance.cxqva5dydjnp.us-east-2.rds.amazonaws.com,1433;User Id = ebispoc; Password=ebispoc_kochi;Initial Catalog = ebisdemo-ravenna; Integrated Security = False; MultipleActiveResultSets=True;";
-
         public List<MemberModel> GetMembers(int skip, int takeCount)
         {
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            using (SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
                 List<MemberModel> listMem = new List<MemberModel>();
                 SqlCommand cmd = new SqlCommand("rav.StudentsGetAll", sqlConnection);
