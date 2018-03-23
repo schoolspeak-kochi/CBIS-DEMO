@@ -41,7 +41,7 @@
                 data: jsonData,
                 cache: false,
                 success: function (result) {
-                    $("#mycontentView").html("<div><h1>Payload for submission<i style=\"color:gray;font-size:15px; font-weight:Normal\"> (edit if needed)</i></h1></div><textarea rows=\"100\" cols=\"130\" style=\"height:100%;width:100%\">" + JSON.stringify(result, null, 4) + "</textarea>");
+                    $("#mycontentView").html("<div><h1>Payload for submission</h1></div><textarea readonly rows=\"100\" cols=\"130\" style=\"height:100%;width:100%\">" + JSON.stringify(result, null, 4) + "</textarea>");
 
                     _hideOverLay();
                 },
