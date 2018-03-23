@@ -1,6 +1,7 @@
 ﻿using CommunityBrands.Demo.Tads.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace CommunityBrands.Demo.Tads.Utils
 {
     public class DBHelper
     {
-        public static string conString = "Data Source=ebispocinstance.cxqva5dydjnp.us-east-2.rds.amazonaws.com,1433;User Id = ebispoc; Password=ebispoc_kochi;Initial Catalog = ebisdemo-tads; Integrated Security = False; MultipleActiveResultSets=True;";
+        public static string conString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
         //Get All applicants from DB
         public static List<Applicant> GetAllApplicants(out int totalCount, int pageNo = 0)
