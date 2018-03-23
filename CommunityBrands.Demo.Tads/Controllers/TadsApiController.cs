@@ -48,14 +48,12 @@ namespace CommunityBrands.Demo.Controllers
             try
             {
                return ProcessRequest(cbisMessage);
-
             }
             catch (Exception ex)
             {
                 //log error
-            }
-
-            return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }      
         }
 
         /// <summary>
@@ -65,20 +63,28 @@ namespace CommunityBrands.Demo.Controllers
         [NonAction]
         public static HttpResponseMessage ProcessRequest(CBISMessage cbisMessage)
         {
-            if (cbisMessage == null)
-                return null;
+            if (cbisMessage == null || cbisMessage.Data == null)
+            {
+                throw new Exception();
+            }
 
-            JToken jToken = cbisMessage.Data;
+            JToken token = cbisMessage.Data;
+            List<Person> lstPerson = new List<Person>();
 
-            if (jToken == null || jToken.Type == JTokenType.Array)
-                return null;
+            if (token is JArray)
+            {
+                lstPerson = token.ToObject<List<Person>>();
+            }
+            else if (token is JObject)
+            {
+                lstPerson.Add(token.ToObject<Person>());
+            }
 
             List<Applicant> applicants = new List<Applicant>();
             List<CBISResult> lstCBISResult = new List<CBISResult>();
 
-            foreach (JObject jObject in jToken.Children<JObject>())
+            foreach (Person mem in lstPerson)
             {
-                Member mem = jObject.ToObject<Member>();
                 if (mem != null)
                 {
                     Applicant applicant = new Applicant();
@@ -119,6 +125,7 @@ namespace CommunityBrands.Demo.Controllers
                 MessageId = cbisMessage.MessageId,
                 MessageType = "NotificationResponse",
                 Model = "CBISResult",
+                Origin = "Tads",
                 Data = JContainer.FromObject(lstCBISResult)
             };
 
