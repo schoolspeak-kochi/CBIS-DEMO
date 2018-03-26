@@ -118,7 +118,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                             MessageId = Guid.NewGuid().ToString(),
                             Model = "Person",
                             Data = StdModel,
-                            EventName = "StudentAdmit",
+                            EventName = "ApplicantAdmitted",
                             InstitutionId = "1001",
                             MessageType = MessageType.Notification.ToString(),
                             Origin = "RAVENNA"
@@ -175,7 +175,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                     Model = typeof(Person).ToString(),
                     Data = jsonSerialiser.Serialize(StdModel),
                     Version = dicVer,
-                    EventName = "StudentAdmit",
+                    EventName = "ApplicantAdmitted",
                     InstitutionId= "1001",
                     MessageType=MessageType.Notification.ToString(),
                     Origin="RAVENNA"
