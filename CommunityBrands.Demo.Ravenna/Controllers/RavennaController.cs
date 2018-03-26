@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
@@ -32,19 +33,16 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         [HttpPost]
         public void AcknowledgeNotification([FromBody]CBISMessage ackModel)
         {
+            var serializer = new JavaScriptSerializer();
+            Dictionary<string, string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new Dictionary<string, string>() : (Dictionary<string, string>)HttpContext.Current.Application["AckReq"];
             if (ackModel.Data!= null)
             {
-                CBISResult errors = (CBISResult)ackModel.Data;
-                if (errors != null && errors.Errors.Count > 0)
+                if (ackModel.Data!= null && string.IsNullOrEmpty(ackModel.Data.ToString()))
                 {
-                    List<string> lstErrors = HttpContext.Current.Application["AckError"] == null ? new List<string>() : (List<string>)HttpContext.Current.Application["AckError"];
-                    lstErrors.AddRange(errors.Errors);
-                    HttpContext.Current.Application["AckError"] = lstErrors;
+                    lstEventToken.Add(ackModel.MessageId, serializer.Serialize(ackModel.Data.ToObject<List<CBISResult>>()));
+                    HttpContext.Current.Application["AckReq"] = lstEventToken;
                 }
             }
-            List<string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new List<string>() : (List<string>)HttpContext.Current.Application["AckReq"];
-            lstEventToken.Add(ackModel.MessageId);
-            HttpContext.Current.Application["AckReq"] = lstEventToken;
         }
 
         // PUT api/<controller>/5
