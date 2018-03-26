@@ -61,7 +61,7 @@ namespace CommunityBrands.Demo.Tads.Utils
         }
 
         //Insert Applicants to DB
-        public static void InsertApplicantstoDB(List<Applicant> applicants)
+        public static bool InsertApplicantstoDB(List<Applicant> applicants)
         {
             string dbInsertString = String.Empty;
             int count = 0;
@@ -88,11 +88,13 @@ namespace CommunityBrands.Demo.Tads.Utils
 
             if (!String.IsNullOrEmpty(dbInsertString))
             {
-                InsertData(dbInsertString);
+                return InsertData(dbInsertString);
             }
+
+            return false;
         }
 
-        private static void InsertData(string SqlInsertString)
+        private static bool InsertData(string SqlInsertString)
         {
             string insertCommand = String.Format("Insert Into [ravennaStudents] Values {0};", SqlInsertString);
 
@@ -101,9 +103,12 @@ namespace CommunityBrands.Demo.Tads.Utils
                 using (SqlCommand cmd = new SqlCommand(insertCommand, con))
                 {
                     con.Open();
-                    cmd.ExecuteScalar();
+                    if (cmd.ExecuteNonQuery() > 0)
+                        return true;
                 }
             }
+
+            return false;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Web.Http;
 using CB.IntegrationService.StandardDataSet;
 using System.Data.SqlClient;
 using System.Data;
+using System.Data.Common;
 using System.Web.Script.Serialization;
 using System.Collections.Generic;
 using CB.IntegrationService.ApiClient;
@@ -45,13 +46,14 @@ namespace CommunityBrands.Demo.Controllers
         [HttpPost]
         public HttpResponseMessage Notification([FromBody]CBISMessage cbisMessage)
         {
-            if (cbisMessage == null || cbisMessage.Data == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             try
             {
+
+                if (cbisMessage == null || cbisMessage.Data == null)
+                {
+                    throw new Exception("Payload is empty");
+                }
+
                 JToken token = cbisMessage.Data;
                 List<Person> lstPerson = new List<Person>();
 
@@ -90,17 +92,35 @@ namespace CommunityBrands.Demo.Controllers
 
                         if (mem.Grade != null)
                             applicant.Grade = mem.Grade.Name;
-                        applicants.Add(applicant);
 
-                        lstCBISResult.Add(new CBISResult
+                        List<string> errors = this.ValidateData(applicant);
+                        if (errors.Count > 0)
                         {
-                            Id = "0",
-                            ResultType = "SUCCESS"
-                        });
+
+                            lstCBISResult.Add(new CBISResult
+                            {
+                                Id = mem.PersonId,
+                                ResultType = "E_UNPROCESSABLE_RECORD",
+                                Errors = errors
+                            });
+                        }
+                        else
+                        {
+                            applicants.Add(applicant);
+
+                            lstCBISResult.Add(new CBISResult
+                            {
+                                Id = mem.PersonId,
+                                ResultType = "SUCCESS"
+                            });
+                        }
                     }
                 }
 
-                DBHelper.InsertApplicantstoDB(applicants);
+                if (!DBHelper.InsertApplicantstoDB(applicants))
+                {
+                    throw new Exception("DB acess failed");
+                }
 
                 CBISMessage cbisMessage_Response = new CBISMessage
                 {
@@ -119,9 +139,30 @@ namespace CommunityBrands.Demo.Controllers
             }
             catch (Exception ex)
             {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                response.Content = new StringContent(ex.Message);
+                return response;
             }
+        }
 
+        private List<string> ValidateData(Applicant applicant)
+        {
+            List<string> errors = new List<string>();
+
+            //Validating gender
+            switch (applicant.Gender.ToUpper())
+            {
+                case "M":
+                case "MALE":
+                case "F":
+                case "FEMALE":
+                    break;
+
+                default:
+                    errors.Add("Gender is invalid");
+                    break;
+            }
+            return errors;
         }
     }
 }
