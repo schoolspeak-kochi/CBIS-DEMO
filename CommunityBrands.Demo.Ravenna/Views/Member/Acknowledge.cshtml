@@ -1,4 +1,4 @@
-﻿@model IEnumerable<string>
+﻿@model IEnumerable< Dictionary<string, string>>
 @{
     Layout = null;
 }
@@ -12,10 +12,19 @@
 <body>
     <div>
             <div><u>Acknowledged Request Tokens</u></div>
-            @foreach (string item in Model)
+        <table>
+            <tr>
+                <th>Message Id</th>
+                <th>Result Payload</th>
+            </tr>
+            @foreach (KeyValuePair<string, string> item in Model)
             {
-                <div>@item</div>
+                <tr>
+                    <td><div>@item.Key</div></td>
+                    <td>@item.Value</td>
+                </tr>
             }
+        </table>
     </div>
 </body>
 </html>

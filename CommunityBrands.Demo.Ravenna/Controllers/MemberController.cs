@@ -8,13 +8,87 @@ using CommunityBrands.Demo.Ravenna.Utils;
 using CommunityBrands.Demo.Ravenna.Models;
 using CB.IntegrationService.StandardDataSet.Models;
 using CB.IntegrationService.ApiClient;
-using CB.IntegrationService.ApiClient.Model;
 using System.Net;
 using CB.IntegrationService.Models;
-using Newtonsoft.Json.Linq;
+using CB.IntegrationService.ApiClient.Model;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
+    public class CBISMessageRav
+    {
+        /////// <summary>
+        /////// Gets or sets the institution identifier.
+        /////// </summary>
+        /////// <value>
+        /////// The institution identifier.
+        /////// </value>
+        public string InstitutionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cb institution identifier.
+        /// </summary>
+        /// <value>
+        /// Global CB institution id â€“ if this value is provided, we can avoid a lookup
+        /// </value>
+        public string CbInstitutionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the event.
+        /// </summary>
+        /// <value>
+        /// The name of the event.
+        /// </value>
+        public string EventName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message identifier.
+        /// </summary>
+        /// <value>
+        /// The message identifier.
+        /// </value>
+        public string MessageId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the origin.
+        /// </summary>
+        /// <value>
+        ///  Product code corresponding to the request(message) generator
+        /// </value>
+        public string Origin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the message.
+        /// </summary>
+        /// <value>
+        /// The type of the message.
+        /// </value>
+        public MessageType MessageType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
+        /// <value>
+        /// The standard model name of the payload (validations, etc will be done against this)
+        /// </value>
+        public string Model { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version. Version for different models
+        /// </summary>
+        /// <value>
+        /// The version.
+        /// </value>
+        public Dictionary<string, string> Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the data.
+        /// </summary>
+        /// <value>
+        /// The actual payload
+        /// </value>
+        public Object Data { get; set; }
+    }
+
     public class MemberController : Controller
     {
         // GET: Member
@@ -30,10 +104,10 @@ namespace EducationBrands.Demo.Ravenna.Controllers
 
         public ActionResult Acknowledge()
         {
-            List<string> LstAck = new List<string>();
+            Dictionary<string, string> LstAck = new Dictionary<string, string>();
             if (HttpContext.Application["AckReq"] != null)
             {
-                LstAck = (List<string>)HttpContext.Application["AckReq"];
+                LstAck = (Dictionary<string,string>)HttpContext.Application["AckReq"];
             }
             return View(LstAck);
         }
@@ -112,15 +186,15 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                         // Send the data
                         var jsonSerialiser = new JavaScriptSerializer();
 
-                        CBISMessage publEvent = new CBISMessage()
+                        CBISMessageRav publEvent = new CBISMessageRav()
                         {
                             CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
                             MessageId = Guid.NewGuid().ToString(),
                             Model = "Person",
                             Data = StdModel,
-                            EventName = "StudentAdmit",
+                            EventName = "ApplicantAdmitted",
                             InstitutionId = "1001",
-                            MessageType = MessageType.Notification.ToString(),
+                            MessageType = MessageType.Notification,
                             Origin = "RAVENNA"
                         };
                         return new JsonResult() { Data = publEvent, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
@@ -166,16 +240,18 @@ namespace EducationBrands.Demo.Ravenna.Controllers
             {
                 // Send the data
                 var jsonSerialiser = new JavaScriptSerializer();
-
-                CBISMessage publEvent = new CBISMessage()
+                Dictionary<string, string> dicVer = new Dictionary<string, string>();
+                dicVer.Add("Person", "1.0.0");
+                CBISMessageRav publEvent = new CBISMessageRav()
                 {
-                    CbInstitutionId= "7a804094-283f-11e8-9cea-025339e5fa76",
+                    CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
                     MessageId = new Guid().ToString(),
                     Model = typeof(Person).ToString(),
                     Data = jsonSerialiser.Serialize(StdModel),
-                    EventName= "StudentAdmit",
+                    Version = dicVer,
+                    EventName = "ApplicantAdmitted",
                     InstitutionId= "1001",
-                    MessageType=MessageType.Notification.ToString(),
+                    MessageType=MessageType.Notification,
                     Origin="RAVENNA"
                 };
                 
