@@ -14,7 +14,7 @@ using CB.IntegrationService.ApiClient.Model;
 
 namespace EducationBrands.Demo.Ravenna.Controllers
 {
-    public class CBISMessageRav
+    public class CBISMessage
     {
         /////// <summary>
         /////// Gets or sets the institution identifier.
@@ -62,7 +62,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         /// <value>
         /// The type of the message.
         /// </value>
-        public MessageType MessageType { get; set; }
+        public string MessageType { get; set; }
 
         /// <summary>
         /// Gets or sets the model.
@@ -181,20 +181,23 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                 {
                     List<Person> StdModel = new List<Person>();
                     MapToStandardDataSet(IsSelected, lstMembers, StdModel);
+                    Dictionary<string, string> version = new Dictionary<string, string>();
+                    version.Add("Person", "1.0.0");
                     if (StdModel != null || StdModel.Count > 0)
                     {
                         // Send the data
                         var jsonSerialiser = new JavaScriptSerializer();
 
-                        CBISMessageRav publEvent = new CBISMessageRav()
+                        CBISMessage publEvent = new CBISMessage()
                         {
                             CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
                             MessageId = Guid.NewGuid().ToString(),
                             Model = "Person",
+                            Version = version,
                             Data = StdModel,
                             EventName = "ApplicantAdmitted",
                             InstitutionId = "1001",
-                            MessageType = MessageType.Notification,
+                            MessageType = MessageType.Notification.ToString(),
                             Origin = "RAVENNA"
                         };
                         return new JsonResult() { Data = publEvent, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
@@ -242,7 +245,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                 var jsonSerialiser = new JavaScriptSerializer();
                 Dictionary<string, string> dicVer = new Dictionary<string, string>();
                 dicVer.Add("Person", "1.0.0");
-                CBISMessageRav publEvent = new CBISMessageRav()
+                CB.IntegrationService.ApiClient.Model.CBISMessage publEvent = new CB.IntegrationService.ApiClient.Model.CBISMessage()
                 {
                     CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
                     MessageId = new Guid().ToString(),
@@ -251,7 +254,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                     Version = dicVer,
                     EventName = "ApplicantAdmitted",
                     InstitutionId= "1001",
-                    MessageType=MessageType.Notification,
+                    MessageType= MessageType.Notification.ToString(),
                     Origin="RAVENNA"
                 };
                 
@@ -275,6 +278,7 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                 if (ravennaMember != null)
                 {
                     Person member = new Person();
+                    member.PersonId = ravennaMember.MemberId.ToString();
                     member.FirstName = ravennaMember.FirstName;
                     member.LastName = ravennaMember.LastName;
                     //just for mapping, not added in DB.hence simply adding M, F for alternate members.

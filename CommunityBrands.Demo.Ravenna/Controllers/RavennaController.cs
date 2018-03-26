@@ -31,15 +31,20 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         // POST api/<controller>
         [Route("Notification")]
         [HttpPost]
-        public void AcknowledgeNotification([FromBody]CBISMessage ackModel)
+        public void AcknowledgeNotification([FromBody] CBISMessage ackModel)
         {
             var serializer = new JavaScriptSerializer();
             Dictionary<string, string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new Dictionary<string, string>() : (Dictionary<string, string>)HttpContext.Current.Application["AckReq"];
-            if (ackModel.Data!= null)
+
+            if (lstEventToken!= null && lstEventToken.ContainsKey(ackModel.MessageId))
             {
-                if (ackModel.Data!= null && string.IsNullOrEmpty(ackModel.Data.ToString()))
+                throw new Exception("Message Id already added");
+            }
+            if (ackModel != null&&  ackModel.Data!= null)
+            {
+                if (ackModel.Data!= null && !string.IsNullOrEmpty(ackModel.Data.ToString()))
                 {
-                    lstEventToken.Add(ackModel.MessageId, serializer.Serialize(ackModel.Data.ToObject<List<CBISResult>>()));
+                    lstEventToken.Add(ackModel.MessageId, ackModel.Data.ToString());
                     HttpContext.Current.Application["AckReq"] = lstEventToken;
                 }
             }

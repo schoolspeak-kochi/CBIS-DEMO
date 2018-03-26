@@ -1,4 +1,4 @@
-﻿@model IEnumerable< Dictionary<string, string>>
+﻿@model Dictionary<string, string>
 @{
     Layout = null;
 }
@@ -8,11 +8,11 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title></title>
-</head>
+ </head>
 <body>
     <div>
             <div><u>Acknowledged Request Tokens</u></div>
-        <table>
+        <table border="solid black 1px">
             <tr>
                 <th>Message Id</th>
                 <th>Result Payload</th>
@@ -21,7 +21,7 @@
             {
                 <tr>
                     <td><div>@item.Key</div></td>
-                    <td>@item.Value</td>
+                    <td><textarea readonly id="txtdata" rows="20" cols="100"> @item.Value</textarea></td>
                 </tr>
             }
         </table>
