@@ -248,9 +248,9 @@ namespace EducationBrands.Demo.Ravenna.Controllers
                 CB.IntegrationService.ApiClient.Model.CBISMessage publEvent = new CB.IntegrationService.ApiClient.Model.CBISMessage()
                 {
                     CbInstitutionId = "7a804094-283f-11e8-9cea-025339e5fa76",
-                    MessageId = new Guid().ToString(),
-                    Model = typeof(Person).ToString(),
-                    Data = jsonSerialiser.Serialize(StdModel),
+                    MessageId = Guid.NewGuid().ToString(),
+                    Model = "Person",
+                    Data = Newtonsoft.Json.Linq.JToken.FromObject(StdModel),
                     Version = dicVer,
                     EventName = "ApplicantAdmitted",
                     InstitutionId= "1001",

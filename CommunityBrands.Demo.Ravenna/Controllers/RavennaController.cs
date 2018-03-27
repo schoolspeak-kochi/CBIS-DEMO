@@ -1,4 +1,5 @@
 ﻿using CB.IntegrationService.ApiClient.Model;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -29,10 +30,17 @@ namespace EducationBrands.Demo.Ravenna.Controllers
         }
 
         // POST api/<controller>
-        [Route("Notification")]
+        [Route("notification")]
         [HttpPost]
-        public void AcknowledgeNotification([FromBody] CBISMessage ackModel)
+        public void AcknowledgeNotification([FromBody] CB.IntegrationService.ApiClient.Model.CBISMessage ackModel)
         {
+            JToken token = ackModel.Data;
+            List<CBISResult> lstREsults = new List<CBISResult>();
+            if (token is JArray)
+            {
+                lstREsults = token.ToObject<List<CBISResult>>();
+            }
+
             var serializer = new JavaScriptSerializer();
             Dictionary<string, string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new Dictionary<string, string>() : (Dictionary<string, string>)HttpContext.Current.Application["AckReq"];
 

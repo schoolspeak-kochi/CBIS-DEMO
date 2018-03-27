@@ -44,7 +44,7 @@ namespace CommunityBrands.Demo.Controllers
         //   [Authorize]
         [Route("Notification")]
         [HttpPost]
-        public HttpResponseMessage Notification([FromBody]CBISMessage cbisMessage)
+        public IHttpActionResult Notification([FromBody]CBISMessage cbisMessage)
         {
             try
             {
@@ -130,18 +130,14 @@ namespace CommunityBrands.Demo.Controllers
                     MessageType = "NotificationResponse",
                     Model = "CBISResult",
                     Origin = "Tads",
-                    Data = JContainer.FromObject(lstCBISResult)
+                    Data = JToken.FromObject(lstCBISResult)
                 };
 
-                var response = new HttpResponseMessage(HttpStatusCode.OK);
-                response.Content = new StringContent(new JavaScriptSerializer().Serialize(cbisMessage_Response));
-                return response;
+                return Ok(cbisMessage_Response);
             }
             catch (Exception ex)
             {
-                var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                response.Content = new StringContent(ex.Message);
-                return response;
+                return InternalServerError(ex);
             }
         }
 
