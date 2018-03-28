@@ -5,16 +5,19 @@
 }
 
 <h2>TADS</h2>
-
+    <div class="row" style="padding:15px 0 15px 0;">
+        <div class="col-md-8">@Html.ActionLink("Incoming Requests","Requests","", new { style = "text-decoration:none;" })
+        </div>
+    </div>
     <div class="row" style="padding:15px 0 15px 0;">
         <div class="col-md-8">
-            Total Applicants: <b>@ViewBag.totalCount</b> 
+            Total Applicants: <b>@ViewBag.totalCount</b>
         </div>
         <div class="col-md-4 text-right">
             <div style="font-weight:bold;display:inline-block;">
                 @Html.ActionLink("<< Previous", "List", new { pageNo = @ViewBag.Previous })
             </div>
-            <div  style="font-weight:bold;display:inline-block;padding-left:15px;">
+            <div style="font-weight:bold;display:inline-block;padding-left:15px;">
                 @Html.ActionLink("Next >>", "List", new { pageNo = @ViewBag.Next })
             </div>
         </div>
@@ -50,7 +53,6 @@
                 @Html.DisplayNameFor(model => model.Grade)
             </th>
         </tr>
-
         @foreach (var item in Model)
         {
             <tr>
@@ -84,7 +86,5 @@
                 </td>
             </tr>
         }
-
     </table>
-
 

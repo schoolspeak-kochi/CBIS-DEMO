@@ -54,6 +54,11 @@ namespace CommunityBrands.Demo.Controllers
                     throw new Exception("Payload is empty");
                 }
 
+                //Store incoming request to  application variable
+                Dictionary<string, string> lstRequests = HttpContext.Current.Application["AckReq"] == null ? new Dictionary<string, string>() : (Dictionary<string, string>)HttpContext.Current.Application["AckReq"];
+                lstRequests.Add(cbisMessage.MessageId, cbisMessage.ToString());
+                HttpContext.Current.Application["AckReq"] = lstRequests;
+
                 JToken token = cbisMessage.Data;
                 List<Person> lstPerson = new List<Person>();
 

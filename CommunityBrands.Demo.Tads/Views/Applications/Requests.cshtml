@@ -1,0 +1,29 @@
+﻿@model Dictionary<string, string>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <div><u>Requests</u></div>
+        <table border="solid black 1px">
+            <tr>
+                <th>Message Id</th>
+                <th>Result Payload</th>
+            </tr>
+            @foreach (KeyValuePair<string, string> item in Model)
+            {
+                <tr>
+                    <td><div>@item.Key</div></td>
+                    <td><textarea readonly id="txtdata" rows="20" cols="100"> @item.Value</textarea></td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>

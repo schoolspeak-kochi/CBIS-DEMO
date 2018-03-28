@@ -28,5 +28,15 @@ namespace CommunityBrands.Demo.Tads.Controllers
 
             return View(model);
         }
+
+        public ActionResult Requests()
+        {
+            Dictionary<string, string> LstAck = new Dictionary<string, string>();
+            if (HttpContext.Application["AckReq"] != null)
+            {
+                LstAck = (Dictionary<string, string>)HttpContext.Application["AckReq"];
+            }
+            return View(LstAck);
+        }
     }
 }
