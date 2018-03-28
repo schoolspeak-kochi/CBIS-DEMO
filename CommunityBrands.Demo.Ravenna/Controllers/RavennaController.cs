@@ -43,19 +43,8 @@ namespace EducationBrands.Demo.Ravenna.Controllers
 
             var serializer = new JavaScriptSerializer();
             Dictionary<string, string> lstEventToken = HttpContext.Current.Application["AckReq"] == null ? new Dictionary<string, string>() : (Dictionary<string, string>)HttpContext.Current.Application["AckReq"];
-
-            if (lstEventToken!= null && lstEventToken.ContainsKey(ackModel.MessageId))
-            {
-                throw new Exception("Message Id already added");
-            }
-            if (ackModel != null&&  ackModel.Data!= null)
-            {
-                if (ackModel.Data!= null && !string.IsNullOrEmpty(ackModel.Data.ToString()))
-                {
-                    lstEventToken.Add(ackModel.MessageId, ackModel.Data.ToString());
-                    HttpContext.Current.Application["AckReq"] = lstEventToken;
-                }
-            }
+            lstEventToken.Add(ackModel.MessageId, ackModel.ToString());
+            HttpContext.Current.Application["AckReq"] = lstEventToken;
         }
 
         // PUT api/<controller>/5
