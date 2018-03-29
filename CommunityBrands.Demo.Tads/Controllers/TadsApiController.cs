@@ -146,6 +146,45 @@ namespace CommunityBrands.Demo.Controllers
             }
         }
 
+        [Route("NotificationDev")]
+        [HttpPost]
+        public IHttpActionResult NotificationDev([FromBody]CBISMessage cbisMessage)
+        {
+            try
+            {
+
+                if (cbisMessage == null || cbisMessage.Data == null)
+                {
+                    throw new Exception("Payload is empty");
+                }
+
+                List<CBISResult> lstCBISResult = new List<CBISResult>();
+                lstCBISResult.Add(new CBISResult() { Id = "111", ResultType = "E_UNPROCESSABLE_RECORD" });
+                lstCBISResult.Add(new CBISResult() { Id = "111", ResultType = "E_UNPROCESSABLE_RECORD" });
+
+                Dictionary<string, string> dicVer = new Dictionary<string, string>();
+                dicVer.Add("Person", "1.0.0");
+
+                CBISMessage cbisMessage_Response = new CBISMessage
+                {
+                    CbInstitutionId = cbisMessage.CbInstitutionId,
+                    EventName = cbisMessage.EventName,
+                    MessageId = cbisMessage.MessageId,
+                    MessageType = "NotificationResponse",
+                    Model = "CBISResult",
+                    Origin = "Tads",
+                    Version = dicVer,
+                    Data = JToken.FromObject(lstCBISResult)
+                };
+
+                return Ok(cbisMessage_Response);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         private List<string> ValidateData(Applicant applicant)
         {
             List<string> errors = new List<string>();
